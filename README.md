@@ -1,5 +1,5 @@
 # ecommerce
-Single Vendor E-Commerce API project about admin who manages the product and order, user only buy the product. This project is integrated with RajaOngkir and Midtrans
+Single Vendor E-Commerce API project about admin who manages the product and order, user only buy the product, manage the cart, track order status and others. This project is integrated with RajaOngkir and Midtrans
 
 # Technologies
 - languange: python 3.12
