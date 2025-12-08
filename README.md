@@ -19,3 +19,22 @@ Single Vendor E-Commerce API project about admin who manages the product and ord
 - payment gateway with midtrans
 - Checkout
 - comment the product
+
+# How to run
+- clone the repo
+```
+https://github.com/Iqbal120708/single-vendor-ecommerce/
+cd single-vendor-ecommerce
+```
+- create and activate a virtual environment
+- add virtual environment variables. open the script `settings.py` to know what the variables are 
+- install python libraries and frameworks
+```
+pip install -r requirements.txt
+```
+- add your database configuration in `settings.py` or in variable virtual enviroment
+- activate the server
+```
+cd ecom_store
+python manage.py runserver
+```
