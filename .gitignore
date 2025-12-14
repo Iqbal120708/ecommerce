@@ -21,4 +21,4 @@ staticfiles/
 *.swo
 .cache/
 
-logs/
+logs/*.log

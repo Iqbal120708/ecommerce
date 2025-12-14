@@ -14,18 +14,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+
 from dj_rest_auth.urls import urlpatterns as dj_rest_auth_urls
-from accounts.views import CustomTokenRefreshView, CustomVerifyEmailAPIView
 from dj_rest_auth.views import PasswordResetConfirmView
+from django.contrib import admin
+from django.urls import include, path
+
+from accounts.views import CustomTokenRefreshView, CustomVerifyEmailAPIView
 
 for i, urlpattern in enumerate(dj_rest_auth_urls):
-    if getattr(urlpattern, 'name', None) == "token_refresh":
+    if getattr(urlpattern, "name", None) == "token_refresh":
         dj_rest_auth_urls[i] = path(
-            "token/refresh/",
-            CustomTokenRefreshView.as_view(),
-            name="token_refresh"
+            "token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"
         )
 
 urlpatterns = [
@@ -44,4 +44,5 @@ urlpatterns = [
     path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
     path("api/product/", include("product.urls")),
     path("api/cart/", include("cart.urls")),
+    path("api/address/", include("shipping_address.urls")),
 ]

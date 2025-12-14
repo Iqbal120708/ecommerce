@@ -1,6 +1,6 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
@@ -25,8 +25,7 @@ class ProductDetail(APIView):
         product = Product.objects.filter(pk=pk).first()
         if not product:
             return Response(
-                {"detail": "Product not found"}, 
-                status=status.HTTP_404_NOT_FOUND
+                {"detail": "Product not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = ProductSerializer(product)

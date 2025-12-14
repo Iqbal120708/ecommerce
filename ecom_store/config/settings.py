@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-from .jsonlog import JSONFormatter
+
 from dotenv import load_dotenv
+
+from .jsonlog import JSONFormatter
 
 load_dotenv()
 
@@ -57,7 +59,7 @@ INSTALLED_APPS = [
     "accounts",
     "shipping_address",
     "product",
-    "cart"
+    "cart",
 ]
 
 MIDDLEWARE = [
@@ -174,9 +176,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 
@@ -223,7 +223,6 @@ LOGGING = {
     },
     "handlers": {
         "console": {"class": "logging.StreamHandler", "formatter": "simple"},
-        
         "file": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
@@ -242,3 +241,4 @@ LOGGING = {
     },
 }
 
+API_KEY_RAJA_ONGKIR = os.environ.get("API_KEY_RAJA_ONGKIR")

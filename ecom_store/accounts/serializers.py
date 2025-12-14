@@ -1,11 +1,14 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+from dj_rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import get_user_model
 from phonenumber_field.serializerfields import PhoneNumberField
-from dj_rest_auth.serializers import UserDetailsSerializer
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
+from shipping_address.serializers import ShippingAddressListSerializer
 
 User = get_user_model()
+
 
 class CustomRegisterSerializer(RegisterSerializer):
     phone_number = PhoneNumberField(
@@ -13,24 +16,26 @@ class CustomRegisterSerializer(RegisterSerializer):
         validators=[
             UniqueValidator(
                 queryset=User.objects.all(),
-                message="A user is already registered with this phone number."
+                message="A user is already registered with this phone number.",
             )
-        ]
+        ],
     )
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
-        data['phone_number'] = self.validated_data.get('phone_number')
+        data["phone_number"] = self.validated_data.get("phone_number")
         return data
 
     def save(self, request):
         user = super().save(request)
-        user.phone_number = self.cleaned_data.get('phone_number')
+        user.phone_number = self.cleaned_data.get("phone_number")
         user.save()
         return user
-        
+
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
+    shipping_addresses = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -40,5 +45,10 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
             "username",
             "email",
             "phone_number",
+            "shipping_addresses",
         )
         read_only_fields = ("email",)
+
+    def get_shipping_addresses(self, obj):
+        addresses = obj.shipping_address.all()
+        return ShippingAddressListSerializer(addresses, many=True).data
