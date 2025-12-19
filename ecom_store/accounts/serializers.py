@@ -5,7 +5,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from shipping_address.serializers import ShippingAddressListSerializer
+#from shipping_address.serializers import ShippingAddressListSerializer
 
 User = get_user_model()
 
@@ -34,7 +34,6 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
-    shipping_addresses = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -45,10 +44,5 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
             "username",
             "email",
             "phone_number",
-            "shipping_addresses",
         )
         read_only_fields = ("email",)
-
-    def get_shipping_addresses(self, obj):
-        addresses = obj.shipping_address.all()
-        return ShippingAddressListSerializer(addresses, many=True).data

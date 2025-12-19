@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.db import transaction
 from .models import City, District, Province, ShippingAddress, SubDistrict
 from .serializers import (CitySerializer, DistrictSerializer,
                           ProvinceSerializer, ShippingAddressSerializer,
@@ -84,7 +84,7 @@ class ShippingAddressView(APIView):
     def get(self, request, pk=None):
         if pk:
             instance = (
-                ShippingAddress.objects.filter(pk=pk, users=request.user)
+                ShippingAddress.objects.filter(pk=pk, user=request.user)
                 .select_related(
                     "province",
                     "city",
@@ -97,7 +97,7 @@ class ShippingAddressView(APIView):
             serializer = ShippingAddressSerializer(instance)
             return Response(serializer.data)
 
-        queryset = ShippingAddress.objects.filter(users=request.user).select_related(
+        queryset = ShippingAddress.objects.filter(user=request.user).select_related(
             "province",
             "city",
             "district",
@@ -107,11 +107,57 @@ class ShippingAddressView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = ShippingAddressSerializer(
-            data=request.data, context={"request": request}
-        )
-        if serializer.is_valid():
+        with transaction.atomic():
+            serializer = ShippingAddressSerializer(
+                data=request.data, context={"request": request}
+            )
+            serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def put(self, request, pk):
+        with transaction.atomic():
+            instance = (
+                ShippingAddress.objects.filter(pk=pk, user=request.user)
+                .select_for_update()
+                .select_related(
+                    "province",
+                    "city",
+                    "district",
+                    "subdistrict",
+                )
+                .first()
+            )
+            if not instance: 
+                return Response(
+                    {"detail": "Item not found in cart"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            serializer = ShippingAddressSerializer(
+                instance,
+                data=request.data,
+                context={"request": request}
+            )
+            
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            
+        return Response(serializer.data)
+                
+    def delete(self, request, pk):
+        instance = (
+            ShippingAddress.objects.filter(pk=pk, user=request.user)
+            .first()
+        )
+        
+        if not instance: 
+            return Response(
+                {"detail": "Item not found in cart"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+        instance.delete()
+            
+        return Response({"detail": "Item deleted"}, status=status.HTTP_204_NO_CONTENT)

@@ -49,4 +49,3 @@ class UserDetailTest(TransactionTestCase):
         self.assertEqual(response_user.data["username"], "test")
         self.assertEqual(response_user.data["email"], "test@gmail.com")
         self.assertEqual(response_user.data["phone_number"], "+6289384442947")
-        self.assertEqual(response_user.data["shipping_addresses"], [])

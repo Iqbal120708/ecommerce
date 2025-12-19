@@ -14,7 +14,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         product = attrs.get("product") or getattr(self.instance, "product", None)
-
+        #product_update = Product.objects.select_for_update().get(id=product.id)
         if not product:
             raise serializers.ValidationError({"product": "Product is required."})
 

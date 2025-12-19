@@ -1,7 +1,8 @@
 from django.db import models
-
+from django.db.models import Q
 from config.models import BaseModel
-
+from django.conf import settings
+from django.core.exceptions import ValidationError
 
 class Province(BaseModel):
     ro_id = models.IntegerField(unique=True)
@@ -26,32 +27,56 @@ class SubDistrict(BaseModel):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=10)
 
-
 class ShippingAddress(BaseModel):
     province = models.ForeignKey(Province, on_delete=models.PROTECT)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     district = models.ForeignKey(District, on_delete=models.PROTECT)
     subdistrict = models.ForeignKey(SubDistrict, on_delete=models.PROTECT)
     street_address = models.CharField(max_length=255)
-
+    is_default = models.BooleanField(default=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
     def clean(self):
-        if subdistrict.district != district:
-            pass
+        errors = {}
+        
+        if self.city.province != self.province:
+            errors["city"] = (
+                "The selected city does not belong to the specified province."
+            )
 
-        if district.city != city:
-            pass
+        if self.district.city != self.city:
+            errors["district"] = (
+                "The selected district does not belong to the specified city."
+            )
 
-        if city.province != province:
-            pass
+        if self.subdistrict.district != self.district:
+            errors["subdistrict"] = (
+                "The selected subdistrict does not belong to the specified district."
+            )
+
+        if errors:
+            raise ValidationError(errors)
 
     class Meta:
-        unique_together = (
-            "province",
-            "city",
-            "district",
-            "subdistrict",
-            "street_address",
-        )
+        # unique_together = (
+        #     "province",
+        #     "city",
+        #     "district",
+        #     "subdistrict",
+        #     "street_address",
+        # )
+        
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user"],
+                condition=Q(is_default=True),
+                name="unique_default_address_per_user",
+            )
+        ]
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 # shi_add = ShippingAddress.objects.filter(
