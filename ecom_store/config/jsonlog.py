@@ -38,5 +38,15 @@ class JSONFormatter(logging.Formatter):
                     "user_agent": getattr(record, "user_agent", None),
                 }
             )
+            
+        elif event_type == "checkout":
+            log_record.update(
+                {
+                    "origin": getattr(record, "origin", None),
+                    "destination": getattr(record, "destination", None),
+                    "weight": getattr(record, "weight", None),
+                    "courier": getattr(record, "courier", None),
+                }
+            )
 
         return json.dumps(log_record)

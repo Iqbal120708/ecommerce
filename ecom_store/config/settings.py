@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     "shipping_address",
     "product",
     "cart",
+    "order",
+    "store",
 ]
 
 MIDDLEWARE = [
@@ -194,7 +196,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 
 # ACCOUNT_AUTHENTICATION_METHOD = "email"
 # ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+#ACCOUNT_USERNAME_REQUIRED = False
 # ACCOUNT_UNIQUE_EMAIL = True
 
 # ACCOUNT_LOGIN_METHODS = ["email"]
@@ -225,7 +227,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {"class": "logging.StreamHandler", "formatter": "simple"},
-        "file": {
+        "file_auth": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
             "filename": os.path.join(BASE_DIR.parent, "logs", "auth_audit.log"),
@@ -233,11 +235,37 @@ LOGGING = {
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
             "backupCount": 3,
         },
+        "file_order": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR.parent, "logs", "order_checkout.log"),
+            "formatter": "json",
+            "maxBytes": 1024 * 1024 * 5,  # 5 MB
+            "backupCount": 3,
+        },
+        "file_order_error": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR.parent, "logs", "order_error_checkout.log"),
+            "formatter": "json",
+            "maxBytes": 1024 * 1024 * 5,  # 5 MB
+            "backupCount": 3,
+        },
     },
     "loggers": {
         "auth.audit": {
-            "handlers": ["file", "console"],
+            "handlers": ["file_auth", "console"],
             "level": "INFO",
+            "propagate": True,
+        },
+        "order": {
+            "handlers": ["file_order", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "order_error": {
+            "handlers": ["file_order_error", "console"],
+            "level": "ERROR",
             "propagate": True,
         }
     },

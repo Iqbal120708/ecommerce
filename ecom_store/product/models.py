@@ -16,7 +16,11 @@ class Product(BaseModel):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, related_name="products", null=True
     )
-    weight = models.DecimalField(max_digits=10, decimal_places=2)
+    variant_name = models.CharField(max_length=255)
+    weight = models.PositiveIntegerField(help_text="Product weight in grams")
+    width = models.PositiveIntegerField(help_text="Product width in cm")
+    height = models.PositiveIntegerField(help_text="Product height in cm")
+    length = models.PositiveIntegerField(help_text="Product length in cm")
     stock = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=18, decimal_places=2)
 

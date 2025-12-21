@@ -44,29 +44,28 @@ class CartView(APIView):
         if "qty" not in request.data:
             raise serializers.ValidationError({"qty": ["Field qty is required."]})
         
-        with transaction.atomic():
-            cart_item = (
-                Cart.objects
-                .select_for_update()  
-                .select_related("product", "user")
-                .filter(pk=pk, user=request.user)  
-                .first()
+        cart_item = (
+            Cart.objects
+            #.select_for_update()  
+            .select_related("product", "user")
+            .filter(pk=pk, user=request.user)  
+            .first()
+        )
+        
+        if not cart_item:
+            return Response(
+                {"detail": "Item not found in cart"},
+                status=status.HTTP_404_NOT_FOUND
             )
-            
-            if not cart_item:
-                return Response(
-                    {"detail": "Item not found in cart"},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-    
-            serializer = CartSerializer(
-                cart_item,
-                data={"qty": request.data["qty"]},
-                partial=True
-            )
-    
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+
+        serializer = CartSerializer(
+            cart_item,
+            data={"qty": request.data["qty"]},
+            partial=True
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
     
         return Response(serializer.data, status=status.HTTP_200_OK)
 
