@@ -5,7 +5,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-#from shipping_address.serializers import ShippingAddressListSerializer
+# from shipping_address.serializers import ShippingAddressListSerializer
 
 User = get_user_model()
 

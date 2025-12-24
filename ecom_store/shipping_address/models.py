@@ -1,8 +1,10 @@
-from django.db import models
-from django.db.models import Q
-from config.models import BaseModel
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.db.models import Q
+
+from config.models import BaseModel
+
 
 class Province(BaseModel):
     ro_id = models.IntegerField(unique=True)
@@ -27,6 +29,7 @@ class SubDistrict(BaseModel):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=10)
 
+
 class ShippingAddress(BaseModel):
     province = models.ForeignKey(Province, on_delete=models.PROTECT)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
@@ -35,10 +38,10 @@ class ShippingAddress(BaseModel):
     street_address = models.CharField(max_length=255)
     is_default = models.BooleanField(default=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    
+
     def clean(self):
         errors = {}
-        
+
         if self.city.province != self.province:
             errors["city"] = (
                 "The selected city does not belong to the specified province."
@@ -63,17 +66,12 @@ class ShippingAddress(BaseModel):
         kecamatan = self.subdistrict.name
         kota_kab = self.city.name
         kode_pos = self.subdistrict.zip_code
-    
-        address_parts = [
-            street,
-            f"Kec. {kecamatan}",
-            kota_kab,
-            kode_pos
-        ]
-        
+
+        address_parts = [street, f"Kec. {kecamatan}", kota_kab, kode_pos]
+
         # Filter jika ada data yang None/Kosong agar tidak muncul koma berlebih
         return ", ".join([str(p) for p in address_parts if p])
-        
+
     class Meta:
         # unique_together = (
         #     "province",
@@ -82,7 +80,7 @@ class ShippingAddress(BaseModel):
         #     "subdistrict",
         #     "street_address",
         # )
-        
+
         constraints = [
             models.UniqueConstraint(
                 fields=["user"],

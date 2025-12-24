@@ -12,5 +12,9 @@ urlpatterns = [
     path("subdistrict/", SubDistrictView.as_view(), name="subdistrict"),
     path("subdistrict/<int:pk>/", SubDistrictView.as_view(), name="subdistrict"),
     path("shipping-address/", ShippingAddressView.as_view(), name="shipping_address"),
-    path("shipping-address/<int:pk>/", ShippingAddressView.as_view(), name="shipping_address"),
+    path(
+        "shipping-address/<int:pk>/",
+        ShippingAddressView.as_view(),
+        name="shipping_address",
+    ),
 ]

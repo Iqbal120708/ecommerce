@@ -38,7 +38,7 @@ class JSONFormatter(logging.Formatter):
                     "user_agent": getattr(record, "user_agent", None),
                 }
             )
-            
+
         elif event_type == "checkout":
             log_record.update(
                 {

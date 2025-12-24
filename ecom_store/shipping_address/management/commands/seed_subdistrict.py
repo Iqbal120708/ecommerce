@@ -38,7 +38,9 @@ class Command(BaseCommand):
 
             if not subdistrict_req.json()["data"]:
                 self.stdout.write(
-                    self.style.WARNING(f"district ro_id {district.ro_id} do not have data")
+                    self.style.WARNING(
+                        f"district ro_id {district.ro_id} do not have data"
+                    )
                 )
                 continue
 

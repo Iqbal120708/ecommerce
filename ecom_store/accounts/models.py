@@ -1,10 +1,11 @@
 import warnings
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from django.conf import settings
+
 class UserDeleteWarning(Warning):
     pass
 
@@ -19,11 +20,11 @@ class CustomUser(AbstractUser):
     #     related_name="users",
     #     blank=True
     # )
-    
+
     @property
     def clean_phone_number(self):
         if self.phone_number:
-            return str(self.phone_number).replace('+', '')
+            return str(self.phone_number).replace("+", "")
         return ""
 
     def delete(self, *args, **kwargs):
@@ -41,7 +42,8 @@ class CustomUser(AbstractUser):
     def soft_delete(self, *args, **kwargs):
         self.is_active = False
         self.save()
-        
+
+
 # from django.db.models import Q
 
 # class UserShippingAddress(models.Model):
@@ -49,11 +51,11 @@ class CustomUser(AbstractUser):
 #     address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE)
 #     is_default = models.BooleanField(default=False)
 
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(
-    #             fields=["user"],
-    #             condition=Q(is_default=True),
-    #             name="unique_default_address_per_user",
-    #         )
-    #     ]
+# class Meta:
+#     constraints = [
+#         models.UniqueConstraint(
+#             fields=["user"],
+#             condition=Q(is_default=True),
+#             name="unique_default_address_per_user",
+#         )
+#     ]

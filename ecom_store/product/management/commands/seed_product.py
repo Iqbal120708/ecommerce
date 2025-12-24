@@ -1,10 +1,13 @@
 import random
-#from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from product.models import Category, Product
+
+# from decimal import Decimal
+
+
 
 User = get_user_model()
 
@@ -26,9 +29,9 @@ class Command(BaseCommand):
                 category=category,
                 stock=50,
                 weight=random.randint(500, 1000),
-                height=random.randint(2,8),
-                width=random.randint(2,10),
-                length=random.randint(5, 50)
+                height=random.randint(2, 8),
+                width=random.randint(2, 10),
+                length=random.randint(5, 50),
             )
 
         self.stdout.write(self.style.SUCCESS("10 sample products created"))

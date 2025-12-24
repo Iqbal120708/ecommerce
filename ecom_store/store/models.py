@@ -1,8 +1,10 @@
-from django.db import models
-from config.models import BaseModel
-from phonenumber_field.modelfields import PhoneNumberField
-from shipping_address.models import ShippingAddress
 from django.core.exceptions import ValidationError
+from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
+
+from config.models import BaseModel
+from shipping_address.models import ShippingAddress
+
 
 # Create your models here.
 class Store(BaseModel):
@@ -12,11 +14,13 @@ class Store(BaseModel):
     phone_number = PhoneNumberField(unique=True)
     shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.PROTECT)
     is_active = models.BooleanField(default=True)
-    
+
     def clean(self):
         if not self.shipping_address.user.is_superuser:
-            raise ValidationError("Alamat pengiriman toko harus dimiliki oleh akun superuser.")
-    
+            raise ValidationError(
+                "Alamat pengiriman toko harus dimiliki oleh akun superuser."
+            )
+
     def save(self, *args, **kwargs):
         self.clean()
         if self.is_active:

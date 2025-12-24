@@ -1,10 +1,12 @@
-#import random
-#from decimal import Decimal
+# import random
+# from decimal import Decimal
 
-from django.contrib.auth import get_user_model
 from allauth.account.models import EmailAddress
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from shipping_address.models import Province, City, District, SubDistrict, ShippingAddress
+
+from shipping_address.models import (City, District, Province, ShippingAddress,
+                                     SubDistrict)
 
 User = get_user_model()
 
@@ -24,29 +26,17 @@ class Command(BaseCommand):
         )
 
         self.province = Province.objects.create(
-            ro_id=1,
-            name='NUSA TENGGARA BARAT (NTB)'
+            ro_id=1, name="NUSA TENGGARA BARAT (NTB)"
         )
-        
-        self.city = City.objects.create(
-            ro_id=1,
-            name='MATARAM',
-            province=self.province
-        )
-        
-        self.district = District.objects.create(
-            ro_id=1,
-            name='MATARAM',
-            city=self.city
-        )
-        
+
+        self.city = City.objects.create(ro_id=1, name="MATARAM", province=self.province)
+
+        self.district = District.objects.create(ro_id=1, name="MATARAM", city=self.city)
+
         self.subdistrict = SubDistrict.objects.create(
-            ro_id=1,
-            name='MATARAM',
-            zip_code='12455',
-            district=self.district
+            ro_id=1, name="MATARAM", zip_code="12455", district=self.district
         )
-        
+
         self.shipping_address = ShippingAddress.objects.create(
             province=self.province,
             city=self.city,
@@ -54,7 +44,7 @@ class Command(BaseCommand):
             subdistrict=self.subdistrict,
             street_address="Jl. Test",
             is_default=True,
-            user=self.user
+            user=self.user,
         )
 
         self.stdout.write(self.style.SUCCESS("user data test created"))

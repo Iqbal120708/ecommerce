@@ -188,7 +188,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 ACCOUNT_UNIQUE_EMAIL = True
 
-#ACCOUNT_AUTHENTICATION_METHOD = "email"
+# ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 ACCOUNT_EMAIL_REQUIRED = True
 
@@ -196,7 +196,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 
 # ACCOUNT_AUTHENTICATION_METHOD = "email"
 # ACCOUNT_EMAIL_REQUIRED = True
-#ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USERNAME_REQUIRED = False
 # ACCOUNT_UNIQUE_EMAIL = True
 
 # ACCOUNT_LOGIN_METHODS = ["email"]
@@ -246,7 +246,9 @@ LOGGING = {
         "file_order_error": {
             "level": "ERROR",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(BASE_DIR.parent, "logs", "order_error_checkout.log"),
+            "filename": os.path.join(
+                BASE_DIR.parent, "logs", "order_error_checkout.log"
+            ),
             "formatter": "json",
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
             "backupCount": 3,
@@ -267,7 +269,7 @@ LOGGING = {
             "handlers": ["file_order_error", "console"],
             "level": "ERROR",
             "propagate": True,
-        }
+        },
     },
 }
 
@@ -275,4 +277,6 @@ API_KEY_RAJA_ONGKIR = os.environ.get("API_KEY_RAJA_ONGKIR")
 
 MIDTRANS_SERVER_KEY = os.environ.get("MIDTRANS_SERVER_KEY")
 MIDTRANS_CLIENT_KEY = os.environ.get("MIDTRANS_CLIENT_KEY")
-MIDTRANS_IS_PRODUCTION = True if os.environ.get("MIDTRANS_IS_PRODUCTION") == "True" else False
+MIDTRANS_IS_PRODUCTION = (
+    True if os.environ.get("MIDTRANS_IS_PRODUCTION") == "True" else False
+)

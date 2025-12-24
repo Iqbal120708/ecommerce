@@ -31,7 +31,9 @@ class Command(BaseCommand):
             )
 
             if district_req.status_code == 429:
-                self.stdout.write(self.style.WARNING(f"API limit in city ro_id {city.ro_id}"))
+                self.stdout.write(
+                    self.style.WARNING(f"API limit in city ro_id {city.ro_id}")
+                )
                 return
 
             if not district_req.json()["data"]:

@@ -4,7 +4,7 @@ from unittest.mock import patch
 from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-#from django.db import connection
+# from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 from freezegun import freeze_time
@@ -145,9 +145,9 @@ class CartTest(TransactionTestCase):
         self.handle_login()
         res_post = self.client.post(reverse("add_to_cart", args=[1]), data={})
         self.assertEqual(res_post.status_code, 201)
-        
+
         res_patch = self.client.patch(reverse("cart", args=[99]), data={"qty": 3})
-        
+
         self.assertEqual(res_patch.status_code, 404)
         data = res_patch.data
         self.assertEqual(data["detail"], "Item not found in cart")

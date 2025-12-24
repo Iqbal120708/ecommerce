@@ -3,10 +3,10 @@ from unittest.mock import patch
 from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.test import TransactionTestCase
 from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework.test import APIClient
-from django.test import TransactionTestCase
 
 User = get_user_model()
 
@@ -17,7 +17,7 @@ class ProductTest(TransactionTestCase):
 
     def setUp(self):
         self.client = APIClient()
-        
+
         call_command("seed_product")
 
         self.user = User.objects.create_user(

@@ -1,13 +1,14 @@
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db import transaction
+
 from .models import City, District, Province, ShippingAddress, SubDistrict
 from .serializers import (CitySerializer, DistrictSerializer,
                           ProvinceSerializer, ShippingAddressSerializer,
                           SubDistrictSerializer)
 
-from django.shortcuts import get_object_or_404
 
 class BaseAddressView(APIView):
     def get(self, request, pk=None):
@@ -93,7 +94,8 @@ class ShippingAddressView(APIView):
                 )
                 .first()
             )
-            if not instance: return Response({})
+            if not instance:
+                return Response({})
             serializer = ShippingAddressSerializer(instance)
             return Response(serializer.data)
 
@@ -115,7 +117,6 @@ class ShippingAddressView(APIView):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        
     def put(self, request, pk):
         with transaction.atomic():
             instance = (
@@ -129,35 +130,29 @@ class ShippingAddressView(APIView):
                 )
                 .first()
             )
-            if not instance: 
+            if not instance:
                 return Response(
                     {"detail": "Item not found in cart"},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
-            
+
             serializer = ShippingAddressSerializer(
-                instance,
-                data=request.data,
-                context={"request": request}
+                instance, data=request.data, context={"request": request}
             )
-            
+
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            
+
         return Response(serializer.data)
-                
+
     def delete(self, request, pk):
-        instance = (
-            ShippingAddress.objects.filter(pk=pk, user=request.user)
-            .first()
-        )
-        
-        if not instance: 
+        instance = ShippingAddress.objects.filter(pk=pk, user=request.user).first()
+
+        if not instance:
             return Response(
-                {"detail": "Item not found in cart"},
-                status=status.HTTP_404_NOT_FOUND
+                {"detail": "Item not found in cart"}, status=status.HTTP_404_NOT_FOUND
             )
-            
+
         instance.delete()
-            
+
         return Response({"detail": "Item deleted"}, status=status.HTTP_204_NO_CONTENT)

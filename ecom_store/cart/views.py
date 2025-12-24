@@ -1,7 +1,8 @@
+from django.db import transaction
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db import transaction
+
 from product.models import Product
 
 from .models import Cart
@@ -38,35 +39,30 @@ class CartView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-
     def patch(self, request, pk):
         if "qty" not in request.data:
             raise serializers.ValidationError({"qty": ["Field qty is required."]})
-        
+
         cart_item = (
             Cart.objects
-            #.select_for_update()  
+            # .select_for_update()
             .select_related("product", "user")
-            .filter(pk=pk, user=request.user)  
+            .filter(pk=pk, user=request.user)
             .first()
         )
-        
+
         if not cart_item:
             return Response(
-                {"detail": "Item not found in cart"},
-                status=status.HTTP_404_NOT_FOUND
+                {"detail": "Item not found in cart"}, status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = CartSerializer(
-            cart_item,
-            data={"qty": request.data["qty"]},
-            partial=True
+            cart_item, data={"qty": request.data["qty"]}, partial=True
         )
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
-    
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
